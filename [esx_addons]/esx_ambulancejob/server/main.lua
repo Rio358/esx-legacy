@@ -216,7 +216,7 @@ ESX.RegisterUsableItem('medikit', function(source)
 		playersHealing[source] = true
 		TriggerClientEvent('esx_ambulancejob:useItem', source, 'medikit')
 
-		Citizen.Wait(10000)
+		Wait(10000)
 		playersHealing[source] = nil
 	end
 end)
@@ -229,7 +229,7 @@ ESX.RegisterUsableItem('bandage', function(source)
 		playersHealing[source] = true
 		TriggerClientEvent('esx_ambulancejob:useItem', source, 'bandage')
 
-		Citizen.Wait(10000)
+		Wait(10000)
 		playersHealing[source] = nil
 	end
 end)

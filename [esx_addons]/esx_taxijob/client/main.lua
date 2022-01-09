@@ -9,13 +9,13 @@ function DrawSub(msg, time)
 end
 
 function ShowLoadingPromt(msg, time, type)
-	Citizen.CreateThread(function()
-		Citizen.Wait(0)
+	CreateThread(function()
+		Wait(0)
 
 		BeginTextCommandBusyspinnerOn('STRING')
 		AddTextComponentSubstringPlayerName(msg)
 		EndTextCommandBusyspinnerOn(type)
-		Citizen.Wait(time)
+		Wait(time)
 
 		BusyspinnerOff()
 	end)
@@ -385,7 +385,7 @@ AddEventHandler('esx_phone:loaded', function(phoneNumber, contacts)
 end)
 
 -- Create Blips
-Citizen.CreateThread(function()
+CreateThread(function()
 	local blip = AddBlipForCoord(Config.Zones.TaxiActions.Pos.x, Config.Zones.TaxiActions.Pos.y, Config.Zones.TaxiActions.Pos.z)
 
 	SetBlipSprite (blip, 198)
@@ -400,9 +400,9 @@ Citizen.CreateThread(function()
 end)
 
 -- Enter / Exit marker events, and draw markers
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if ESX.PlayerData.job and ESX.PlayerData.job.name == 'taxi' then
 			local coords = GetEntityCoords(PlayerPedId())
@@ -432,19 +432,19 @@ Citizen.CreateThread(function()
 			end
 
 			if letSleep then
-				Citizen.Wait(500)
+				Wait(500)
 			end
 		else
-			Citizen.Wait(1000)
+			Wait(1000)
 		end
 	end
 end)
 
 -- Taxi Job
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
 
-		Citizen.Wait(0)
+		Wait(0)
 		local playerPed = PlayerPedId()
 
 		if OnJob then
@@ -455,7 +455,7 @@ Citizen.CreateThread(function()
 					local waitUntil = GetGameTimer() + GetRandomIntInRange(30000, 45000)
 
 					while OnJob and waitUntil > GetGameTimer() do
-						Citizen.Wait(0)
+						Wait(0)
 					end
 
 					if OnJob and IsPedInAnyVehicle(playerPed, false) and GetEntitySpeed(playerPed) > 0 then
@@ -537,7 +537,7 @@ Citizen.CreateThread(function()
 							targetCoords = Config.JobLocations[GetRandomIntInRange(1, #Config.JobLocations)]
 							local distance = #(playerCoords - targetCoords)
 							while distance < Config.MinimumDistance do
-								Citizen.Wait(5)
+								Wait(5)
 
 								targetCoords = Config.JobLocations[GetRandomIntInRange(1, #Config.JobLocations)]
 								distance = #(playerCoords - targetCoords)
@@ -602,14 +602,14 @@ Citizen.CreateThread(function()
 				end
 			end
 		else
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while onJob do
-		Citizen.Wait(10000)
+		Wait(10000)
 		if ESX.PlayerData.job ~= nil and ESX.PlayerData.job.grade < 3 then
 			if not IsInAuthorizedVehicle() then
 				ClearCurrentMission()
@@ -621,9 +621,9 @@ Citizen.CreateThread(function()
 end)
 
 -- Key Controls
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if CurrentAction and not IsDead then
 			ESX.ShowHelpNotification(CurrentActionMsg)

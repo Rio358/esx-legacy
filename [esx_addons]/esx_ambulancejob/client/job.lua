@@ -74,7 +74,7 @@ function OpenMobileAmbulanceActionsMenu()
 								isBusy = true
 								ESX.ShowNotification(_U('heal_inprogress'))
 								TaskStartScenarioInPlace(playerPed, 'CODE_HUMAN_MEDIC_TEND_TO_DEAD', 0, true)
-								Citizen.Wait(10000)
+								Wait(10000)
 								ClearPedTasks(playerPed)
 
 								TriggerServerEvent('esx_ambulancejob:removeItem', 'bandage')
@@ -100,7 +100,7 @@ function OpenMobileAmbulanceActionsMenu()
 								isBusy = true
 								ESX.ShowNotification(_U('heal_inprogress'))
 								TaskStartScenarioInPlace(playerPed, 'CODE_HUMAN_MEDIC_TEND_TO_DEAD', 0, true)
-								Citizen.Wait(10000)
+								Wait(10000)
 								ClearPedTasks(playerPed)
 
 								TriggerServerEvent('esx_ambulancejob:removeItem', 'medikit')
@@ -140,7 +140,7 @@ function revivePlayer(closestPlayer)
 			ESX.ShowNotification(_U('revive_inprogress'))
 
 			for i=1, 15 do
-				Citizen.Wait(900)
+				Wait(900)
 
 				ESX.Streaming.RequestAnimDict(lib, function()
 					TaskPlayAnim(playerPed, lib, anim, 8.0, -8.0, -1, 0, 0.0, false, false, false)
@@ -164,7 +164,7 @@ function FastTravel(coords, heading)
 	DoScreenFadeOut(800)
 
 	while not IsScreenFadedOut() do
-		Citizen.Wait(500)
+		Wait(500)
 	end
 
 	ESX.Game.Teleport(playerPed, coords, function()
@@ -177,9 +177,9 @@ function FastTravel(coords, heading)
 end
 
 -- Draw markers & Marker logic
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if ESX.PlayerData.job and ESX.PlayerData.job.name == 'ambulance' then
 			local playerCoords = GetEntityCoords(PlayerPedId())
@@ -279,18 +279,18 @@ Citizen.CreateThread(function()
 			end
 
 			if letSleep then
-				Citizen.Wait(500)
+				Wait(500)
 			end
 		else
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
 
 -- Fast travels
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 		local playerCoords, letSleep = GetEntityCoords(PlayerPedId()), true
 
 		for hospitalNum,hospital in pairs(Config.Hospitals) do
@@ -310,7 +310,7 @@ Citizen.CreateThread(function()
 		end
 
 		if letSleep then
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
@@ -350,9 +350,9 @@ AddEventHandler('esx_ambulancejob:hasExitedMarker', function(hospital, part, par
 end)
 
 -- Key Controls
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if CurrentAction then
 			ESX.ShowHelpNotification(CurrentActionMsg)
@@ -378,7 +378,7 @@ Citizen.CreateThread(function()
 				OpenMobileAmbulanceActionsMenu()
 			end
 		else
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)

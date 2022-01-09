@@ -164,7 +164,7 @@ function OpenCloakroomMenu()
 			end, 'police')
 
 			while awaitService == nil do
-				Citizen.Wait(5)
+				Wait(5)
 			end
 
 			-- if we couldn't enter service don't let the player get changed
@@ -333,7 +333,7 @@ function OpenPoliceActionsMenu()
 					elseif action == 'hijack_vehicle' then
 						if IsAnyVehicleNearPoint(coords.x, coords.y, coords.z, 3.0) then
 							TaskStartScenarioInPlace(playerPed, 'WORLD_HUMAN_WELDING', 0, true)
-							Citizen.Wait(20000)
+							Wait(20000)
 							ClearPedTasksImmediately(playerPed)
 
 							SetVehicleDoorsLocked(vehicle, 1)
@@ -353,13 +353,13 @@ function OpenPoliceActionsMenu()
 						currentTask.task = ESX.SetTimeout(10000, function()
 							ClearPedTasks(playerPed)
 							ImpoundVehicle(vehicle)
-							Citizen.Wait(100) -- sleep the entire script to let stuff sink back to reality
+							Wait(100) -- sleep the entire script to let stuff sink back to reality
 						end)
 
 						-- keep track of that vehicle!
-						Citizen.CreateThread(function()
+						CreateThread(function()
 							while currentTask.busy do
-								Citizen.Wait(1000)
+								Wait(1000)
 
 								vehicle = GetClosestVehicle(coords.x, coords.y, coords.z, 3.0, 0, 71)
 								if not DoesEntityExist(vehicle) and currentTask.busy then
@@ -606,7 +606,7 @@ RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 	if job.name == 'police' then
-		Citizen.Wait(1000)
+		Wait(1000)
 		TriggerServerEvent('esx_policejob:forceBlip')
 	end
 end)
@@ -673,7 +673,7 @@ AddEventHandler('esx_policejob:hasEnteredEntityZone', function(entity)
 		CurrentActionData = {entity = entity}
 	end
 
-	if GetEntityModel(entity) == GetHashKey('p_ld_stinger_s') then
+	if GetEntityModel(entity) == `p_ld_stinger_s` then
 		local playerPed = PlayerPedId()
 		local coords    = GetEntityCoords(playerPed)
 
@@ -701,14 +701,15 @@ AddEventHandler('esx_policejob:handcuff', function()
 	if isHandcuffed then
 		RequestAnimDict('mp_arresting')
 		while not HasAnimDictLoaded('mp_arresting') do
-			Citizen.Wait(100)
+			Wait(100)
 		end
 
 		TaskPlayAnim(playerPed, 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0, 0, 0, 0)
-
+		SetPedConfigFlag(playerPed, 120, true)
+		SetPedConfigFlag(playerPed, 121, true)
 		SetEnableHandcuffs(playerPed, true)
 		DisablePlayerFiring(playerPed, true)
-		SetCurrentPedWeapon(playerPed, GetHashKey('WEAPON_UNARMED'), true) -- unarm player
+		SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true) -- unarm player
 		SetPedCanPlayGestureAnims(playerPed, false)
 		FreezeEntityPosition(playerPed, true)
 		DisplayRadar(false)
@@ -743,6 +744,8 @@ AddEventHandler('esx_policejob:unrestrain', function()
 		ClearPedSecondaryTask(playerPed)
 		SetEnableHandcuffs(playerPed, false)
 		DisablePlayerFiring(playerPed, false)
+		SetPedConfigFlag(playerPed, 120, false) -- Ped Flag for handcuffed
+		SetPedConfigFlag(playerPed, 121, false) -- Ped Flag for Ankle Cuffed
 		SetPedCanPlayGestureAnims(playerPed, true)
 		FreezeEntityPosition(playerPed, false)
 		DisplayRadar(true)
@@ -762,11 +765,11 @@ AddEventHandler('esx_policejob:drag', function(copId)
 	end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	local wasDragged
 
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 		local playerPed = PlayerPedId()
 
 		if isHandcuffed and dragStatus.isDragged then
@@ -777,7 +780,7 @@ Citizen.CreateThread(function()
 					AttachEntityToEntity(playerPed, targetPed, 11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
 					wasDragged = true
 				else
-					Citizen.Wait(1000)
+					Wait(1000)
 				end
 			else
 				wasDragged = false
@@ -788,7 +791,7 @@ Citizen.CreateThread(function()
 			wasDragged = false
 			DetachEntity(playerPed, true, false)
 		else
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
@@ -828,9 +831,9 @@ AddEventHandler('esx_policejob:OutVehicle', function()
 end)
 
 -- Handcuff
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 		local playerPed = PlayerPedId()
 
 		if isHandcuffed then
@@ -883,13 +886,13 @@ Citizen.CreateThread(function()
 				end)
 			end
 		else
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
 
 -- Create blips
-Citizen.CreateThread(function()
+CreateThread(function()
 	for k,v in pairs(Config.PoliceStations) do
 		local blip = AddBlipForCoord(v.Blip.Coords)
 
@@ -906,9 +909,9 @@ Citizen.CreateThread(function()
 end)
 
 -- Draw markers and more
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if ESX.PlayerData.job and ESX.PlayerData.job.name == 'police' then
 			local playerPed = PlayerPedId()
@@ -1008,16 +1011,16 @@ Citizen.CreateThread(function()
 			end
 
 			if letSleep then
-				Citizen.Wait(500)
+				Wait(500)
 			end
 		else
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
 
 -- Enter / Exit entity zone events
-Citizen.CreateThread(function()
+CreateThread(function()
 	local trackedEntities = {
 		'prop_roadcone02a',
 		'prop_barrier_work05',
@@ -1027,7 +1030,7 @@ Citizen.CreateThread(function()
 	}
 
 	while true do
-		Citizen.Wait(500)
+		Wait(500)
 
 		local playerPed = PlayerPedId()
 		local playerCoords = GetEntityCoords(playerPed)
@@ -1064,9 +1067,9 @@ Citizen.CreateThread(function()
 end)
 
 -- Key Controls
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if CurrentAction then
 			ESX.ShowHelpNotification(CurrentActionMsg)
